@@ -1,0 +1,2 @@
+# avoid copying on docker build
+**/node_modules

@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  fin-serving-layer:
+    build:
+      context: ./services/fin-serving-layer
+      dockerfile: Dockerfile
+      args:
+        SERVICE_PORT: ${FIN_SERVING_LAYER_PORT}
+    ports:
+      - "${FIN_SERVING_LAYER_PORT}:${FIN_SERVING_LAYER_PORT}"
+    environment:
+      - SERVICE_HOST=${FIN_SERVING_LAYER_HOST}
+      - SERVICE_PORT=${FIN_SERVING_LAYER_PORT}
+
+  ui:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+      args:
+        EXPO_DEVTOOLS_PORT: ${EXPO_DEVTOOLS_PORT}
+        EXPO_LOCAL_SERVER_PORT: ${EXPO_LOCAL_SERVER_PORT}
+        EXPO_LAN_PORT: ${EXPO_LAN_PORT}
+        EXPO_METRO_BUNDLER_PORT: ${EXPO_METRO_BUNDLER_PORT}
+        EXPO_WEB_PORT: ${EXPO_WEB_PORT}
+    ports:
+      - "${EXPO_DEVTOOLS_PORT}:${EXPO_DEVTOOLS_PORT}"
+      - "${EXPO_LOCAL_SERVER_PORT}:${EXPO_LOCAL_SERVER_PORT}"
+      - "${EXPO_LAN_PORT}:${EXPO_LAN_PORT}"
+      - "${EXPO_METRO_BUNDLER_PORT}:${EXPO_METRO_BUNDLER_PORT}"
+      - "${EXPO_WEB_PORT}:${EXPO_WEB_PORT}"
+    environment:
+      - FIN_SERVING_LAYER_PORT=${FIN_SERVING_LAYER_PORT}
+      - EXPO_DEVTOOLS_PORT=${EXPO_DEVTOOLS_PORT}
+      - EXPO_LOCAL_SERVER_PORT=${EXPO_LOCAL_SERVER_PORT}
+      - EXPO_LAN_PORT=${EXPO_LAN_PORT}
+      - EXPO_METRO_BUNDLER_PORT=${EXPO_METRO_BUNDLER_PORT}
+      - EXPO_WEB_PORT=${EXPO_WEB_PORT}
+    depends_on:
+      - fin-serving-layer

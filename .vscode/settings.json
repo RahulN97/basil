@@ -1,0 +1,3 @@
+{
+    "python.defaultInterpreterPath": "./services/fin-serving-layer/fin-serving-layer-env/bin/python"
+}
