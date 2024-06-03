@@ -3,6 +3,7 @@ FROM python:3.8-slim
 WORKDIR /app
 COPY . /app
 
+RUN apt-get update && apt-get install -y htop lsof vim
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Streams python service logs to docker

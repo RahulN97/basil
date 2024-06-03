@@ -4,13 +4,13 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { LinkExit, LinkSuccess } from 'react-native-plaid-link-sdk';
 
 import { FinClient } from './clients/FinClient';
+import { AppConfig } from './config/AppConfig';
 import logger from './logger';
 
 
-const serviceHost: string = 'fin-serving-layer';
-const servicePort: string = process.env.FIN_SERVING_LAYER_PORT || "9999";
-const finClient: FinClient = new FinClient(`http://${serviceHost}:${servicePort}`)
-
+const appConfig: AppConfig = new AppConfig();
+const serviceUrl: string = `http://${appConfig.finServingLayerHost}:${appConfig.finServingLayerPort}`
+const finClient: FinClient = new FinClient(serviceUrl);
 
 const App: React.FC = () => {
   const [loading, setLoading] = useState(true);

@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-// import logger from './../logger';
+import logger from './../logger';
 
 
 export class FinClient {
@@ -17,8 +17,7 @@ export class FinClient {
         const requestConfig: AxiosRequestConfig = {
             headers: this.HEADERS,
         }
-        console.log(`Issuing GET ${url}`)
-        // logger.info(`Issuing GET ${url}`)
+        logger.info(`Issuing GET ${url}`)
         const response: AxiosResponse = await axios.get(
             url,
             requestConfig
@@ -31,8 +30,7 @@ export class FinClient {
         const requestConfig: AxiosRequestConfig = {
             headers: this.HEADERS,
         };
-        console.log(`Issuing POST ${url}`)
-        // logger.info(`Issuing POST ${url}`)
+        logger.info(`Issuing POST ${url}`)
         const response: AxiosResponse = await axios.post(
             url,
             data,
@@ -61,7 +59,7 @@ export class FinClient {
             const response: AxiosResponse = await this.get(endpoint);
             return response.data.status;
         } catch (error: any) {
-            logger.log()
+            logger.info(`Error fetching health status: ${error.message}`);
             throw new Error(`Error: ${error.message}`);
         }
     }
