@@ -2,27 +2,32 @@ import { MissingConfigError } from "./MissingConfigError";
 
 
 export class AppConfig {
+    public env: string;
     public finServingLayerHost: string;
     public finServingLayerPort: string;
 
     constructor() {
-        this.finServingLayerHost = this.getFinServingLayerHost();
-        this.finServingLayerPort = this.getFinServingLayerPort();
+        this.env = this.extractEnv();
+        this.finServingLayerHost = this.extractFinServingLayerHost();
+        this.finServingLayerPort = this.extractFinServingLayerPort();
     }
 
-    private getFinServingLayerHost(): string {
-        const host: string | undefined = process.env.FIN_SERVING_LAYER_HOST;
-        if (host === undefined) {
-            throw new MissingConfigError("FIN_SERVING_LAYER_HOST");
+    private checkUndefined(val: string | undefined, varName: string): string {
+        if (val === undefined) {
+            throw new MissingConfigError(varName);
         }
-        return host;
+        return val;
     }
 
-    private getFinServingLayerPort(): string {
-        const port: string | undefined = process.env.FIN_SERVING_LAYER_PORT;
-        if (port === undefined) {
-            throw new MissingConfigError("FIN_SERVING_LAYER_PORT");
-        }
-        return port;
+    private extractEnv(): string {
+        return this.checkUndefined(process.env.ENV, "ENV");
+    }
+
+    private extractFinServingLayerHost(): string {
+        return this.checkUndefined(process.env.FIN_SERVING_LAYER_HOST, "FIN_SERVING_LAYER_HOST");
+    }
+
+    private extractFinServingLayerPort(): string {
+        return this.checkUndefined(process.env.FIN_SERVING_LAYER_PORT, "FIN_SERVING_LAYER_PORT");
     }
 }

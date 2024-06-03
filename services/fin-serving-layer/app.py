@@ -5,7 +5,7 @@ from fastapi import FastAPI, Query
 from fastapi.responses import JSONResponse
 from starlette.middleware.cors import CORSMiddleware
 
-from app_config import AppConfig, init_app_config
+from config.app_config import AppConfig
 from fin_client.base_fin_client import BaseFinClient
 from fin_client.model.institution import InstitutionType
 from fin_client.model.link_token import LinkToken
@@ -15,7 +15,7 @@ from fin_client.provider import provide_fin_client
 app: FastAPI = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"])
 
-app_config: AppConfig = init_app_config()
+app_config: AppConfig = AppConfig()
 fin_client: BaseFinClient = provide_fin_client()
 
 

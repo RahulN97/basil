@@ -35,7 +35,7 @@ PLAID_ENV_MAP = {
 
 class PlaidClient(BaseFinClient):
 
-    CLIENT_NAME = "nw-tracker"
+    CLIENT_NAME = "basil"
 
     def __init__(self) -> None:
         plaid_env: Optional[str] = os.getenv("PLAID_ENV")
