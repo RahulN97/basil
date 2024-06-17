@@ -7,13 +7,9 @@ RUN apt-get update && apt-get install -y htop lsof vim
 COPY package*.json ./
 RUN npm ci --no-audit --maxsockets 1
 
-COPY . .
+COPY . /app
 
-EXPOSE ${EXPO_DEVTOOLS_PORT}
-EXPOSE ${EXPO_LOCAL_SERVER_PORT}
-EXPOSE ${EXPO_LAN_PORT}
-EXPOSE ${EXPO_METRO_BUNDLER_PORT}
-EXPOSE ${EXPO_WEB_PORT}
+EXPOSE ${PORT}
 
 # can't use Docker for ios and android
 CMD ["./run.sh"]

@@ -9,4 +9,4 @@ else
     set +a
 fi
 
-npm run web
+npm start
