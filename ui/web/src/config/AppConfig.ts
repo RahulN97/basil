@@ -1,0 +1,54 @@
+import { MissingConfigError } from './MissingConfigError';
+
+const envVars: Record<string, string | undefined> = {
+  ENV: process.env.REACT_APP_ENV,
+  FIN_SERVING_LAYER_HOST: process.env.REACT_APP_FIN_SERVING_LAYER_HOST,
+  FIN_SERVING_LAYER_PORT: process.env.REACT_APP_FIN_SERVING_LAYER_PORT,
+};
+
+export class AppConfig {
+  public env: string;
+  private defaultEnv = 'dev';
+
+  public finServingLayerHost: string;
+  private defaultFinServingLayerHost = '0.0.0.0';
+
+  public finServingLayerPort: string;
+  private defaultFinServingLayerPort = '8000';
+
+  constructor() {
+    this.env = this.extractEnv();
+    this.finServingLayerHost = this.extractFinServingLayerHost();
+    this.finServingLayerPort = this.extractFinServingLayerPort();
+  }
+
+  private checkUndefined(varName: string, val: string | undefined, defaultVal?: string): string {
+    if (val === undefined) {
+      if (defaultVal === undefined) {
+        throw new MissingConfigError(varName);
+      }
+      return defaultVal;
+    }
+    return val;
+  }
+
+  private extractEnv(): string {
+    return this.checkUndefined('ENV', envVars.ENV, this.defaultEnv);
+  }
+
+  private extractFinServingLayerHost(): string {
+    return this.checkUndefined(
+      'FIN_SERVING_LAYER_HOST',
+      envVars.FIN_SERVING_LAYER_HOST,
+      this.defaultFinServingLayerHost,
+    );
+  }
+
+  private extractFinServingLayerPort(): string {
+    return this.checkUndefined(
+      'FIN_SERVING_LAYER_PORT',
+      envVars.FIN_SERVING_LAYER_PORT,
+      this.defaultFinServingLayerPort,
+    );
+  }
+}

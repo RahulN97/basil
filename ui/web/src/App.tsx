@@ -1,36 +1,31 @@
 import React from 'react';
-import logo from './logo.svg';
-
-// import { usePlaidLink } from "react-plaid-link";
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import './App.css';
+import { FinClientProvider } from './clients/FinClientContext';
+import HomePage from './components/HomePage';
+import Landing from './components/Landing';
+import { AppConfigProvider } from './config/AppConfigContext';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Landing />,
+  },
+  {
+    path: '/user/:userId',
+    element: <HomePage />,
+  },
+]);
 
 function App() {
   return (
-
-    // const config: PlaidLinkOptions = {
-    //   onSuccess: (public_token, metadata) => {}
-    //   onExit: (err, metadata) => {}
-    //   onEvent: (eventName, metadata) => {}
-    //   token: 'GENERATED_LINK_TOKEN',
-    // };
-    // const { open, exit, ready } = usePlaidLink(config);
-
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <AppConfigProvider>
+        <FinClientProvider>
+          <RouterProvider router={router} />
+        </FinClientProvider>
+      </AppConfigProvider>
     </div>
   );
 }

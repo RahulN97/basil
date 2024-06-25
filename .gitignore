@@ -1,9 +1,8 @@
 ### shared ###
 .env*
-.vscode
 
 ### services ###
-*-env/
+.venv
 
 ### ui ###
 # dependencies

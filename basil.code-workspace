@@ -1,0 +1,22 @@
+{
+    "folders": [
+        {
+            "path": ".",
+            "name": "Root",
+        },
+        {
+            "path": "ui/web",
+            "name": "WebUI",
+        },
+        {
+            "path": "services/fin-serving-layer",
+            "name": "FinServingLayer",
+        },
+    ],
+    "settings": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": "explicit",
+        },
+    },
+}

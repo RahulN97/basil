@@ -1,4 +1,6 @@
 {
-    "python.defaultInterpreterPath": "./services/fin-serving-layer/fin-serving-layer-env/bin/python",
-    "javascript.validate.enable": false
+    "files.exclude": {
+        "services": true,
+        "ui": true,
+    }
 }

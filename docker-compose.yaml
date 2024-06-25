@@ -25,9 +25,9 @@ services:
     ports:
       - "${WEB_UI_PORT}:${WEB_UI_PORT}"
     environment:
-      - ENV=${ENV}
       - PORT=${WEB_UI_PORT}
-      - FIN_SERVING_LAYER_HOST=${FIN_SERVING_LAYER_HOST}
-      - FIN_SERVING_LAYER_PORT=${FIN_SERVING_LAYER_PORT}
+      - REACT_APP_ENV=${ENV}
+      - REACT_APP_FIN_SERVING_LAYER_HOST=${FIN_SERVING_LAYER_HOST}
+      - REACT_APP_FIN_SERVING_LAYER_PORT=${FIN_SERVING_LAYER_PORT}
     depends_on:
       - fin-serving-layer

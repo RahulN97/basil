@@ -4,5 +4,4 @@ README.md
 .vscode
 
 # ignore for fresh build
-node_modules
-build
+.venv
