@@ -4,6 +4,7 @@ RUN apt-get update && \
     apt-get install -y htop lsof vim curl && \
     curl -sSL https://install.python-poetry.org | python3 -
 
+# add poetry to path
 ENV PATH "/root/.local/bin:$PATH"
 
 WORKDIR /app

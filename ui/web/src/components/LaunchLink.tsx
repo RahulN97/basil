@@ -15,32 +15,24 @@ import { FinClient } from '../clients/FinClient';
 import { useFinClient } from '../clients/FinClientContext';
 import logger from '../utils/logger';
 
-interface BalanceResponse {
-  accounts: {
-    balances: {
-      available: number;
-      current: number;
-      iso_currency_code: string;
-      limit: number | null;
-      unofficial_currency_code: string | null;
-    };
-    // Include other relevant fields as needed
-  }[];
-}
-
 interface LaunchLinkProps {
   linkToken: string;
   userId: string;
+  institutionType: string;
 }
 
-const LaunchLink: React.FC<LaunchLinkProps> = ({ linkToken, userId }) => {
+const LaunchLink: React.FC<LaunchLinkProps> = ({
+  linkToken,
+  userId,
+  institutionType,
+}: LaunchLinkProps) => {
   const finClient: FinClient = useFinClient();
 
   const onSuccess = useCallback<PlaidLinkOnSuccess>(
     async (publicToken: string, metadata: PlaidLinkOnSuccessMetadata) => {
       try {
-        const accessToken: string = await finClient.exchangeToken(publicToken);
-        logger.info(`Exchanged public token ${publicToken} for access token: ${accessToken}`);
+        await finClient.exchangeToken(userId, publicToken);
+        logger.info('Exchanged public token for item access');
       } catch (error) {
         logger.error('Error exchanging public token');
         throw error;
@@ -53,7 +45,8 @@ const LaunchLink: React.FC<LaunchLinkProps> = ({ linkToken, userId }) => {
     async (error: PlaidLinkError | null, metadata: PlaidLinkOnExitMetadata) => {
       logger.info('Exiting link');
       if (error != null && error.error_code == 'INVALID_LINK_TOKEN') {
-        linkToken = await finClient.createLinkToken(userId, 'test');
+        logger.info('Received invalid link token. Attempting to recreate link token');
+        linkToken = await finClient.createLinkToken(userId, institutionType);
       }
       if (error != null) {
         logger.error(`Link exited due to error ${error.error_message}`);

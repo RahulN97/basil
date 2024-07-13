@@ -5,6 +5,7 @@ import './App.css';
 import { FinClientProvider } from './clients/FinClientContext';
 import HomePage from './components/HomePage';
 import Landing from './components/Landing';
+import SignIn from './components/SignIn';
 import { AppConfigProvider } from './config/AppConfigContext';
 
 const router = createBrowserRouter([
@@ -13,7 +14,11 @@ const router = createBrowserRouter([
     element: <Landing />,
   },
   {
-    path: '/user/:userId',
+    path: '/signin',
+    element: <SignIn />,
+  },
+  {
+    path: '/home',
     element: <HomePage />,
   },
 ]);

@@ -1,45 +1,53 @@
-from typing import Dict
+import traceback
 
 import uvicorn
-from fastapi import FastAPI, Query
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI, HTTPException, Request, Response
+from fastapi.exception_handlers import http_exception_handler
 from starlette.middleware.cors import CORSMiddleware
+from uvicorn.main import ASGIApplication
 
+from api import api_router
 from config.app_config import AppConfig
-from fin_client.base_fin_client import BaseFinClient
-from fin_client.model.institution import InstitutionType
-from fin_client.model.link_token import LinkToken
-from fin_client.provider import provide_fin_client
+from dependencies import get_app_config
+from middleware import LogPerformanceMiddleware
+from utils import settings
+from utils.logging import logger
 
 
-app: FastAPI = FastAPI()
-app.add_middleware(CORSMiddleware, allow_origins=["*"])
+def create_app() -> ASGIApplication:
+    async def log_stacktrace(request: Request, exc: Exception) -> Response:
+        msg: str = f"Error on request: {request.url}"
+        logger.error(msg, exc_info=traceback.format_exc())
+        return await http_exception_handler(request, exc)
 
-app_config: AppConfig = AppConfig()
-fin_client: BaseFinClient = provide_fin_client()
-
-
-@app.post("/create/link/token", response_class=JSONResponse)
-async def create_link_token(
-    user_id: str = Query(..., description="User ID"),
-    institution_type: str = Query(..., description="Institution Type"),
-) -> Dict[str, str]:
-    link_token: LinkToken = fin_client.create_link_token(
-        user_id=user_id,
-        institution_type=InstitutionType.from_str(institution_type),
+    app: FastAPI = FastAPI(title=settings.APP_NAME)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
-    return {"link_token": link_token.token}
+    app.add_middleware(LogPerformanceMiddleware)
+    app.add_exception_handler(HTTPException, log_stacktrace)
+    app.include_router(api_router)
+    return app
 
 
-@app.get("/institutions/get")
-async def get_institutions(access_token: str) -> Dict:
-    pass
+def start_server(app: ASGIApplication) -> None:
+    app_config: AppConfig = get_app_config()
+    app_target: ASGIApplication | str = "app:app" if app_config.reload or app_config.num_workers > 1 else app
+    uvicorn.run(
+        app_target,
+        host=app_config.service_host,
+        port=app_config.service_port,
+        reload=app_config.reload,
+        log_config=app_config.log_config,
+        log_level=app_config.log_level,
+        workers=app_config.num_workers,
+    )
 
 
-@app.get("/health", response_class=JSONResponse)
-async def health() -> Dict[str, str]:
-    return {"status": "healthy"}
-
-
+app: ASGIApplication = create_app()
 if __name__ == "__main__":
-    uvicorn.run(app, host=app_config.service_host, port=app_config.service_port)
+    start_server(app)

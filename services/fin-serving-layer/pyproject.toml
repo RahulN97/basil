@@ -10,6 +10,7 @@ python = "3.12.4"
 plaid-python = "^23.0.0"
 fastapi = "^0.111.0"
 uvicorn = "^0.30.1"
+google-cloud-firestore = "^2.16.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"
@@ -39,6 +40,7 @@ exclude = '''
 
 [tool.isort]
 lines_after_imports = 2
-force_grid_wrap = 3
+line_length = 120
+force_grid_wrap = 6
 include_trailing_comma = true
 profile = "black"

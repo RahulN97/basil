@@ -1,41 +1,54 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { FinClient } from '../clients/FinClient';
 import { useFinClient } from '../clients/FinClientContext';
+import logger from '../utils/logger';
 
 const Landing: React.FC = () => {
   const finClient: FinClient = useFinClient();
-  const [userId, setUserId] = useState('');
   const [healthStatus, setHealthStatus] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserId(event.target.value);
-  };
+  useEffect(() => {
+    const checkHealthStatus = async () => {
+      try {
+        const health: string = await finClient.getHealthStatus();
+        setHealthStatus(health);
+      } catch (error) {
+        logger.error('Error fetching health status');
+        setHealthStatus('unhealthy');
+      }
+    };
 
-  const handleButtonClick = () => {
-    if (userId) {
-      navigate(`/user/${userId}`);
-    }
-  };
-
-  const handleHealthButtonClick = async () => {
-    try {
-      const health: string = await finClient.getHealthStatus();
-      setHealthStatus(health);
-    } catch (error) {
-      console.log('Error fetching health status');
-    }
-  };
+    checkHealthStatus();
+    const periodicHealthCheck = setInterval(checkHealthStatus, 1e4);
+    return () => {
+      clearInterval(periodicHealthCheck);
+    };
+  }, [finClient]);
 
   return (
     <div>
       <h1>Welcome to Basil</h1>
-      <button onClick={handleHealthButtonClick}>Check Service Health</button>
-      {healthStatus && <p>Health Status: {healthStatus}</p>}
-      <input type="text" placeholder="Enter User ID" value={userId} onChange={handleInputChange} />
-      <button onClick={handleButtonClick}>Go to HomePage</button>
+      <div style={{ position: 'absolute', top: 10, right: 10 }}>
+        <span
+          style={{
+            height: '10px',
+            width: '10px',
+            backgroundColor: healthStatus === 'healthy' ? 'green' : 'red',
+            borderRadius: '50%',
+            display: 'inline-block',
+          }}
+        ></span>
+      </div>
+      <button
+        onClick={() => {
+          navigate('/signin');
+        }}
+      >
+        Sign In
+      </button>
     </div>
   );
 };

@@ -3,6 +3,8 @@
 
 ### services ###
 .venv
+__pycache__
+*-creds.json
 
 ### ui ###
 # dependencies

@@ -9,5 +9,4 @@ else
     set +a
 fi
 
-cd src
-poetry run uvicorn app:app --host $SERVICE_HOST --port $SERVICE_PORT
+cd src && poetry run -vvv python app.py

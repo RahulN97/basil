@@ -3,6 +3,12 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import logger from '../utils/logger';
 import { ApiError } from './ApiError';
 
+export interface CreateUserParams {
+  userId: string;
+  name: string;
+  email: string;
+}
+
 export class FinClient {
   private apiUrl: string;
   private readonly HEADERS: Record<string, string> = {
@@ -33,22 +39,47 @@ export class FinClient {
     return response;
   }
 
+  public async createUser({ userId, name, email }: CreateUserParams): Promise<string> {
+    const endpoint = '/users/';
+    const data: Record<string, string> = {
+      user_id: userId,
+      name: name,
+      email: email,
+    };
+    try {
+      const response: AxiosResponse = await this.post(endpoint, data);
+      return response.data.creation_time;
+    } catch (error: any) {
+      throw new ApiError(error.message);
+    }
+  }
+
   public async createLinkToken(userId: string, institutionType: string): Promise<string> {
-    const endpoint = '/create/link/token';
+    const endpoint = '/fin-data/link_token';
     const data: Record<string, string> = {
       user_id: userId,
       institution_type: institutionType,
     };
     try {
       const response: AxiosResponse = await this.post(endpoint, data);
-      return response.data.link_token;
+      return response.data.token;
     } catch (error: any) {
       throw new ApiError(error.message);
     }
   }
 
-  public async exchangeToken(publicToken: string): Promise<string> {
-    return 'some_access_token';
+  public async exchangeToken(userId: string, publicToken: string): Promise<void> {
+    const endpoint = '/fin-data/item_access';
+    const data: Record<string, string> = {
+      user_id: userId,
+      public_token: publicToken,
+    };
+    try {
+      const response: AxiosResponse = await this.post(endpoint, data);
+      // TODO: store response data
+    } catch (error: any) {
+      throw new ApiError(error.message);
+    }
   }
 
   public async getHealthStatus(): Promise<string> {

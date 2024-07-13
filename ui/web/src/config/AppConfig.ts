@@ -4,22 +4,27 @@ const envVars: Record<string, string | undefined> = {
   ENV: process.env.REACT_APP_ENV,
   FIN_SERVING_LAYER_HOST: process.env.REACT_APP_FIN_SERVING_LAYER_HOST,
   FIN_SERVING_LAYER_PORT: process.env.REACT_APP_FIN_SERVING_LAYER_PORT,
+  FIREBASE_API_KEY: process.env.REACT_APP_FIREBASE_API_KEY,
+  FIREBASE_AUTH_DOMAIN: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
 };
 
 export class AppConfig {
   public env: string;
-  private defaultEnv = 'dev';
-
   public finServingLayerHost: string;
-  private defaultFinServingLayerHost = '0.0.0.0';
-
   public finServingLayerPort: string;
+  public firebaseApiKey: string;
+  public firebaseAuthDomain: string;
+
+  private defaultEnv = 'dev';
+  private defaultFinServingLayerHost = '0.0.0.0';
   private defaultFinServingLayerPort = '8000';
 
   constructor() {
     this.env = this.extractEnv();
     this.finServingLayerHost = this.extractFinServingLayerHost();
     this.finServingLayerPort = this.extractFinServingLayerPort();
+    this.firebaseApiKey = this.extractFirebaseApiKey();
+    this.firebaseAuthDomain = this.extractFirebaseAuthDomain();
   }
 
   private checkUndefined(varName: string, val: string | undefined, defaultVal?: string): string {
@@ -50,5 +55,13 @@ export class AppConfig {
       envVars.FIN_SERVING_LAYER_PORT,
       this.defaultFinServingLayerPort,
     );
+  }
+
+  private extractFirebaseApiKey(): string {
+    return this.checkUndefined('FIREBASE_API_KEY', envVars.FIREBASE_API_KEY);
+  }
+
+  private extractFirebaseAuthDomain(): string {
+    return this.checkUndefined('FIREBASE_AUTH_DOMAIN', envVars.FIREBASE_AUTH_DOMAIN);
   }
 }
