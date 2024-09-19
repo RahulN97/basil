@@ -41,8 +41,9 @@ async def create_user(db_client: DbClient, request: UserCreate) -> User:
         email=request.email,
         creation_time=now,
         update_time=now,
+        item_ids=[],
     )
-    db_client.upsert_user(user)
+    db_client.save_user(user)
     return user
 
 
@@ -57,13 +58,14 @@ async def update_user(db_client: DbClient, request: UserUpdate) -> User:
         )
 
     new_user: User = User(
-        user_id=request.user_id,
+        user_id=cur_user.user_id,
         name=request.name or cur_user.name,
         email=request.name or cur_user.email,
         creation_time=cur_user.creation_time,
         update_time=datetime.now(),
+        item_ids=cur_user.item_ids,
     )
-    db_client.upsert_user(new_user)
+    db_client.save_user(new_user)
     return new_user
 
 

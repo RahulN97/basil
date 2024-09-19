@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel
 
@@ -10,6 +10,7 @@ class User(BaseModel):
     email: str
     creation_time: datetime
     update_time: datetime
+    item_ids: List[str]
 
 
 class BaseUserRequest(BaseModel):

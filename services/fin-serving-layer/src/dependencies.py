@@ -17,6 +17,14 @@ def get_app_config() -> AppConfig:
 AppConfigDep = Annotated[AppConfig, Depends(get_app_config)]
 
 
+def get_firestore_client(app_config: AppConfigDep) -> FirestoreClient:
+    app_config.validate_db_creds()
+    return FirestoreClient()
+
+
+DbClient = Annotated[FirestoreClient, Depends(get_firestore_client)]
+
+
 def get_plaid_client(app_config: AppConfigDep) -> PlaidClient:
     return PlaidClient(
         plaid_env=app_config.plaid_env,
@@ -26,11 +34,3 @@ def get_plaid_client(app_config: AppConfigDep) -> PlaidClient:
 
 
 FinClient = Annotated[PlaidClient, Depends(get_plaid_client)]
-
-
-def get_firestore_client(app_config: AppConfigDep) -> FirestoreClient:
-    app_config.validate_db_creds()
-    return FirestoreClient()
-
-
-DbClient = Annotated[FirestoreClient, Depends(get_firestore_client)]

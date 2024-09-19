@@ -7,15 +7,14 @@ class Item(BaseModel):
     item_id: str
     user_id: str
     access_token: str
-    accounts: List[str]
+    account_ids: List[str]
 
 
 class ItemAccess(BaseModel):
-    access_token: str
     item_id: str
+    access_token: str
 
 
 class ItemAccessCreate(BaseModel):
     user_id: str
-    public_token: str
     public_token: str
